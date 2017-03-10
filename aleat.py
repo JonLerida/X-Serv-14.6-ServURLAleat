@@ -3,5 +3,5 @@
 import webapp as WA
 
 
-
-print ("hola")
+# Defino unaclase de tipo webApp: mi servidor
+MyServer = WA.webApp("localhost", 8080)
