@@ -11,6 +11,7 @@ webApp class
 """
 
 import socket
+import random
 
 
 class webApp:
@@ -23,16 +24,23 @@ class webApp:
 
     def parse(self, request):
         """Parse the received request, extracting the relevant information."""
+        dest = request.split()[4]
+        return dest
 
-        return None
 
     def process(self, parsedRequest):
         """Process the relevant elements of the request.
 
         Returns the HTTP code for the reply, and an HTML page.
         """
+        newURL = parsedRequest+'/'+str(int(random.random() * 10000000))
 
-        return ("200 OK", "<html><body><h1>It works!</h1></body></html>")
+        return ("200 OK", "<html><body><h1> Bienvenido al generador de URL's aleatorias.</h1>"+
+                            "<p>"+
+                            "<p>Tu siguiente URL(pincha con la rueda del raton): <a href='"+
+                            newURL+"'>"+newURL+
+                            "</a></p>"+
+                            "</body></html>")
 
     def __init__(self, hostname, port):
         """Initialize the web application."""
@@ -47,19 +55,22 @@ class webApp:
 
         # Accept connections, read incoming data, and call
         # parse and process methods (in a loop)
-
-        while True:
-            print('Waiting for connections')
-            (recvSocket, address) = mySocket.accept()
-            print('HTTP request received (going to parse and process):')
-            request = recvSocket.recv(2048)
-            print(request.decode('utf-8'))
-            parsedRequest = self.parse(request)
-            (returnCode, htmlAnswer) = self.process(parsedRequest)
-            print('Answering back...')
-            recvSocket.send(bytes("HTTP/1.1 " + returnCode + " \r\n\r\n"
-                            + htmlAnswer + "\r\n", 'utf-8'))
-            recvSocket.close()
+        try:
+            while True:
+                print('Waiting for connections')
+                (recvSocket, address) = mySocket.accept()
+                print('HTTP request received (going to parse and process):')
+                request = recvSocket.recv(2048).decode('utf-8')
+                print(request)
+                parsedRequest = self.parse(request)
+                (returnCode, htmlAnswer) = self.process(parsedRequest)
+                print('Answering back...')
+                recvSocket.send(bytes("HTTP/1.1 " + returnCode + " \r\n\r\n"
+                                + htmlAnswer + "\r\n", 'utf-8'))
+                recvSocket.close()
+        except KeyboardInterrupt:
+            print("Closing program")
+            mySocket.close()
 
 if __name__ == "__main__":
     testWebApp = webApp("localhost", 1234)
