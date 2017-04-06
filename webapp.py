@@ -69,4 +69,4 @@ class webApp:
             mySocket.close()
 
 if __name__ == "__main__":
-testWebApp = webApp("localhost", 1234)
+    testWebApp = webApp("localhost", 1234)
