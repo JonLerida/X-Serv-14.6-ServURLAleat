@@ -12,6 +12,7 @@ webApp class
 
 import socket
 import random
+import urllib.parse
 
 
 class webApp:
@@ -33,7 +34,7 @@ class webApp:
 
         Returns the HTTP code for the reply, and an HTML page.
         """
-        newURL = parsedRequest+'/'+str(int(random.random() * 10000000))
+        newURL = 'http://'+parsedRequest+'/'+str(int(random.random() * 10000000))
 
         return ("200 OK", "<html><body><h1> Bienvenido al generador de URL's aleatorias.</h1>"+
                             "<p>"+
@@ -61,6 +62,7 @@ class webApp:
                 (recvSocket, address) = mySocket.accept()
                 print('HTTP request received (going to parse and process):')
                 request = recvSocket.recv(2048).decode('utf-8')
+                request = urllib.parse.unquote(request)
                 print(request)
                 parsedRequest = self.parse(request)
                 (returnCode, htmlAnswer) = self.process(parsedRequest)
