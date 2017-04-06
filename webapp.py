@@ -11,6 +11,7 @@ webApp class
 """
 
 import socket
+import random
 
 
 class webApp:
@@ -24,15 +25,19 @@ class webApp:
     def parse(self, request):
         """Parse the received request, extracting the relevant information."""
 
-        return None
+        return request.split()[1][1:]
 
     def process(self, parsedRequest):
         """Process the relevant elements of the request.
 
         Returns the HTTP code for the reply, and an HTML page.
         """
-
-        return ("200 OK", "<html><body><h1>It works!</h1></body></html>")
+        #URL aleatoria, como número aleatorio
+        urlAleatoria = str(random.randint(100000, 999999))
+        #respuesta HTML
+        respuesta = 'Hola, tu URL aleatoria: <br>\r\n'
+        return (("200 OK", "<html><body><h1>"+ respuesta +'<a href="'+urlAleatoria+'">Tu url aleatoria, bro</a>\r\n'+
+        "</h1></body></html>"))
 
     def __init__(self, hostname, port):
         """Initialize the web application."""
@@ -52,10 +57,11 @@ class webApp:
             print('Waiting for connections')
             (recvSocket, address) = mySocket.accept()
             print('HTTP request received (going to parse and process):')
-            request = recvSocket.recv(2048)
-            print(request.decode('utf-8'))
+            request = recvSocket.recv(2048).decode('utf-8')
+            #print(request.decode('utf-8'))
             parsedRequest = self.parse(request)
             (returnCode, htmlAnswer) = self.process(parsedRequest)
+            print(htmlAnswer)
             print('Answering back...')
             recvSocket.send(bytes("HTTP/1.1 " + returnCode + " \r\n\r\n"
                             + htmlAnswer + "\r\n", 'utf-8'))
