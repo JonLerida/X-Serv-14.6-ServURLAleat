@@ -1,7 +1,9 @@
-#! /usr/bin/python3
+#!/usr/bin/python3
+
 """
 webApp class
  Root for hierarchy of classes implementing web applications
+
  Copyright Jesus M. Gonzalez-Barahona and Gregorio Robles (2009-2015)
  jgb @ gsyc.es
  TSAI, SAT and SARO subjects (Universidad Rey Juan Carlos)
@@ -15,6 +17,7 @@ import urllib.parse
 
 class webApp:
     """Root of a hierarchy of classes implementing web applications
+
     This class does almost nothing. Usually, new classes will
     inherit from it, and by redefining "parse" and "process" methods
     will implement the logic of a web application in particular.
@@ -22,21 +25,24 @@ class webApp:
 
     def parse(self, request):
         """Parse the received request, extracting the relevant information."""
-        dest = request.split()[4]
+        try:
+            dest = request.split()[4]
+        except ValueError:
+            return None
         return dest
 
 
     def process(self, parsedRequest):
         """Process the relevant elements of the request.
+
         Returns the HTTP code for the reply, and an HTML page.
         """
         newURL = 'http://'+parsedRequest+'/'+str(int(random.random() * 10000000))
 
-        return ("200 OK", "<html><body><h1> Bienvenido al generador de URL's aleatorias.</h1>"+
-                            "<p>"+
-                            "<p>Tu siguiente URL(pincha con la rueda del raton): <a href='"+
+        return ("200 OK", "<html><body><h1> Bienvenido al generador de URL's aleatorias.</h1><br>"+
+                            "<p>Tu siguiente URL: <a href='"+
                             newURL+"'>"+newURL+
-                            "</a></p>"+
+                            "</a></p><br><p> Nos vemos</p>"+
                             "</body></html>")
 
     def __init__(self, hostname, port):
@@ -61,7 +67,11 @@ class webApp:
                 request = urllib.parse.unquote(request)
                 print(request)
                 parsedRequest = self.parse(request)
-                (returnCode, htmlAnswer) = self.process(parsedRequest)
+                if parsedRequest == None:
+                    returnCode = '404 Not Found'
+                    htmlAnswer = '<html><h1>Error interno. Prueba "localhost:1234"</h1></html>'
+                else:
+                    (returnCode, htmlAnswer) = self.process(parsedRequest)
                 print('Answering back...')
                 recvSocket.send(bytes("HTTP/1.1 " + returnCode + " \r\n\r\n"
                                 + htmlAnswer + "\r\n", 'utf-8'))
