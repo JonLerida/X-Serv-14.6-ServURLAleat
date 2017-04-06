@@ -1,9 +1,7 @@
-#!/usr/bin/python3
-
+#! /usr/bin/python3
 """
 webApp class
  Root for hierarchy of classes implementing web applications
-
  Copyright Jesus M. Gonzalez-Barahona and Gregorio Robles (2009-2015)
  jgb @ gsyc.es
  TSAI, SAT and SARO subjects (Universidad Rey Juan Carlos)
@@ -17,7 +15,6 @@ import urllib.parse
 
 class webApp:
     """Root of a hierarchy of classes implementing web applications
-
     This class does almost nothing. Usually, new classes will
     inherit from it, and by redefining "parse" and "process" methods
     will implement the logic of a web application in particular.
@@ -31,7 +28,6 @@ class webApp:
 
     def process(self, parsedRequest):
         """Process the relevant elements of the request.
-
         Returns the HTTP code for the reply, and an HTML page.
         """
         newURL = 'http://'+parsedRequest+'/'+str(int(random.random() * 10000000))
